@@ -1,1 +1,1 @@
-# grocery-monkey-golang
+# Grocery Monkey Go
