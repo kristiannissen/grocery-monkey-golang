@@ -7,10 +7,6 @@ import (
 	"os"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi Kitty!")
-}
-
 func main() {
 	var port string = os.Getenv("PORT")
 
@@ -18,6 +14,8 @@ func main() {
 		port = "8080"
 	}
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello Kitty!")
+	})
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
