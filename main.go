@@ -1,9 +1,27 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 	"os"
+)
+
+type (
+	Item struct {
+		Name  string
+		Key   string
+		Store string
+	}
+)
+
+var (
+	items = []Item{
+		{"Milk", "1", "Meny"},
+		{"Bread", "2", "Netto"},
+		{"Apple", "3", "Irma"},
+	}
 )
 
 func main() {
@@ -14,8 +32,21 @@ func main() {
 	}
 
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello Sick Ass Pussy!")
+		return c.HTML(http.StatusOK, "Hello Sick Ass Pussy!")
+	})
+
+	e.GET("/items", func(c echo.Context) error {
+		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+		c.Response().WriteHeader(http.StatusOK)
+
+		return json.NewEncoder(c.Response()).Encode(items)
 	})
 	e.Logger.Fatal(e.Start(":" + port))
 }
