@@ -13,14 +13,15 @@ type (
 		Name  string
 		Key   string
 		Store string
+		QTY   string
 	}
 )
 
 var (
 	items = []Item{
-		{"Milk", "1", "Meny"},
-		{"Bread", "2", "Netto"},
-		{"Apple", "3", "Irma"},
+		{"Milk", "1", "Meny", "4"},
+		{"Bread", "2", "Netto", "2"},
+		{"Apple", "3", "Irma", "16"},
 	}
 )
 
