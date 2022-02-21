@@ -23,6 +23,7 @@ var (
 		{"Milk", "1", "Meny", "4", "stk"},
 		{"Bread", "2", "Netto", "2", "kg"},
 		{"Apple", "3", "Irma", "1", "pose"},
+		{"Melon", "5", "SuperBrugsen", "1", "stk"},
 	}
 )
 
