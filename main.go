@@ -16,6 +16,11 @@ type (
 		QTY   string
 		Unit  string
 	}
+
+  List struct {
+    Key string
+    UserKey string
+  }
 )
 
 var (
@@ -52,5 +57,17 @@ func main() {
 
 		return json.NewEncoder(c.Response()).Encode(items)
 	})
+  // Resourceful Routing
+  e.GET("/list", func(c echo.Context) error {
+		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
+
+    l := &List{
+      Key: "123",
+      UserKey: "666",
+    }
+
+		return c.JSON(http.StatusOK, l)
+  })
+
 	e.Logger.Fatal(e.Start(":" + port))
 }
