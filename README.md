@@ -1,7 +1,7 @@
 # Grocery Monkey Go
 
 ```
-docker run -it -p 3000:3000 -v $(pwd)/:/go/src 7f37b8a95eda
+docker run -it -p 3000:3000 -v $(pwd)/:/go/src [image id]
 ```
 
 To run the server
