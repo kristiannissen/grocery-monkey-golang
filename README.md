@@ -19,5 +19,5 @@ wget --post-data 'username=kitty' http://localhost:PORT/sign -O-
 ### Test create list
 
 ```
-wget -O- --post-data='{"..."}' --header='Content-Type:application/json' --header='Authorization: Bearer ...' http://localhost:PORT/list'
+wget -O- --post-data='{"..."}' --header='Content-Type:application/json' --header='Authorization: Bearer ...' http://localhost:PORT/groceries
 ```

@@ -3,6 +3,7 @@ package main
 import (
 	//"encoding/json"
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
@@ -28,15 +29,18 @@ type (
 	}
 
 	GroceryList struct {
-		User      string    `json:"user"`
-		Id        string    `json:"id"`
-		Groceries []Grocery `json:"groceries"`
+		User        string    `json:"user"`
+		Subscribers []string  `json:"subscribers"`
+		Id          string    `json:"id"`
+		Groceries   []Grocery `json:"groceries"`
 	}
 )
 
 // Handlers
 func sign(c echo.Context) error {
 	username := c.FormValue("username")
+	// Generate a new UUID
+	uuid := uuid.New()
 
 	// Check form value
 	if username == "" {
@@ -45,7 +49,7 @@ func sign(c echo.Context) error {
 	// Set custom claims
 	claims := &jwtCustomClaims{
 		username,
-		"666",
+		uuid.String(),
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},
@@ -71,9 +75,13 @@ func newGroceryList(c echo.Context) error {
 	claims := user.Claims.(*jwtCustomClaims)
 	// We can now check the user using claims.UserName
 
+	// Create UUID for the list
+	listUid := uuid.New()
+
 	groceries := GroceryList{
-		User: claims.Uid,
-		Id:   "123",
+		User:        claims.Uid,
+		Id:          listUid.String(),
+		Subscribers: []string{"1", "2"},
 		Groceries: []Grocery{
 			Grocery{},
 		},
