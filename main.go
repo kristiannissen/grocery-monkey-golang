@@ -102,6 +102,11 @@ func updateGroceryList(c echo.Context) error {
 	return c.JSON(http.StatusOK, groceries)
 }
 
+// Delete grocerylist
+func deleteGroceryList(c echo.Context) error {
+	return c.String(http.StatusOK, "Deleted")
+}
+
 func main() {
 	var port string = os.Getenv("PORT")
 
@@ -137,6 +142,9 @@ func main() {
 
 	// Update grocery list
 	r.PUT("/update", updateGroceryList)
+
+	// Delete grocery list
+	r.DELETE("/delete", deleteGroceryList)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
