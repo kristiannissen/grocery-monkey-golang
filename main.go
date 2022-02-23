@@ -90,6 +90,18 @@ func newGroceryList(c echo.Context) error {
 	return c.JSON(http.StatusOK, groceries)
 }
 
+// Update grocerylist
+func updateGroceryList(c echo.Context) error {
+	// Create a new grocerylist
+	groceries := new(GroceryList)
+
+	if err := c.Bind(groceries); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusOK, groceries)
+}
+
 func main() {
 	var port string = os.Getenv("PORT")
 
@@ -120,7 +132,11 @@ func main() {
 	r.Use(middleware.JWTWithConfig(config))
 
 	// Restricted routes
+	// Create new grocery list
 	r.POST("", newGroceryList)
+
+	// Update grocery list
+	r.PUT("/update", updateGroceryList)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
