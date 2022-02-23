@@ -1,37 +1,58 @@
 package main
 
 import (
-	"encoding/json"
+	//"encoding/json"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 	"os"
+	"time"
 )
+
+// Constant secret
+const secret string = "pussysecret"
 
 type (
-	Item struct {
-		Name  string
-		Key   string
-		Store string
-		QTY   string
-		Unit  string
-	}
-
-  List struct {
-    Key string
-    UserKey string
-  }
-)
-
-var (
-	items = []Item{
-		{"Milk", "1", "Meny", "4", "stk"},
-		{"Bread", "2", "Netto", "2", "kg"},
-		{"Apple", "3", "Irma", "1", "pose"},
-		{"Melon", "5", "SuperBrugsen", "1", "stk"},
-		{"Beer", "6", "Netto", "1", "flasker"},
+	jwtCustomClaims struct {
+        UserName string `json:"username"`
+		jwt.StandardClaims
 	}
 )
+
+// Handlers
+func sign(c echo.Context) error {
+    username := c.FormValue("username")
+
+    // Check form value
+    if username == "" {
+        return echo.ErrUnauthorized
+    }
+    // Set custom claims
+    claims := &jwtCustomClaims{
+        username,
+        jwt.StandardClaims{
+            ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+        },
+    }
+
+    // Create token
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    // Generate token
+    t, err := token.SignedString([]byte(secret))
+    if err != nil {
+        return err
+    }
+
+    // Response with token
+    return c.JSON(http.StatusOK, echo.Map{
+        "token": t,
+    })
+}
+// Restricted handlers
+func list(c echo.Context) error {
+    return c.String(http.StatusOK, "Hello")
+}
 
 func main() {
 	var port string = os.Getenv("PORT")
@@ -42,32 +63,27 @@ func main() {
 
 	e := echo.New()
 
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
+    // Default route
+    e.GET("/", func(c echo.Context) error {
+        return c.HTML(http.StatusOK, "Hello Kitty")
+    })
+    // Post to get token
+    e.POST("/sign", sign)
 
-	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, "Hello Sick Ass Pussy!")
-	})
+    // Group that requires jwt token
+    r := e.Group("/list")
 
-	e.GET("/items", func(c echo.Context) error {
-		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
-		c.Response().WriteHeader(http.StatusOK)
-
-		return json.NewEncoder(c.Response()).Encode(items)
-	})
-  // Resourceful Routing
-  e.GET("/list", func(c echo.Context) error {
-		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
-
-    l := &List{
-      Key: "123",
-      UserKey: "666",
+    // Configure jwt
+    config := middleware.JWTConfig{
+        Claims: &jwtCustomClaims{},
+        SigningKey: []byte(secret),
     }
 
-		return c.JSON(http.StatusOK, l)
-  })
+    // Use middleware with config
+    r.Use(middleware.JWTWithConfig(config))
+
+    // Restricted routes
+    r.GET("/new", list)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
