@@ -15,43 +15,71 @@ const secret string = "pussysecret"
 
 type (
 	jwtCustomClaims struct {
-        UserName string `json:"username"`
+		UserName string `json:"username"`
+		Uid      string `json:"uid"`
 		jwt.StandardClaims
+	}
+
+	Grocery struct {
+		Name     string `json:"name"`
+		Quantity int    `json:"qty"`
+		Unit     string `json:"unit"`
+		Store    string `json:"store"`
+	}
+
+	GroceryList struct {
+		User      string    `json:"user"`
+		Id        string    `json:"id"`
+		Groceries []Grocery `json:"groceries"`
 	}
 )
 
 // Handlers
 func sign(c echo.Context) error {
-    username := c.FormValue("username")
+	username := c.FormValue("username")
 
-    // Check form value
-    if username == "" {
-        return echo.ErrUnauthorized
-    }
-    // Set custom claims
-    claims := &jwtCustomClaims{
-        username,
-        jwt.StandardClaims{
-            ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
-        },
-    }
+	// Check form value
+	if username == "" {
+		return echo.ErrUnauthorized
+	}
+	// Set custom claims
+	claims := &jwtCustomClaims{
+		username,
+		"666",
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+		},
+	}
 
-    // Create token
-    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    // Generate token
-    t, err := token.SignedString([]byte(secret))
-    if err != nil {
-        return err
-    }
+	// Create token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// Generate token
+	t, err := token.SignedString([]byte(secret))
+	if err != nil {
+		return err
+	}
 
-    // Response with token
-    return c.JSON(http.StatusOK, echo.Map{
-        "token": t,
-    })
+	// Response with token
+	return c.JSON(http.StatusOK, echo.Map{
+		"token": t,
+	})
 }
+
 // Restricted handlers
-func list(c echo.Context) error {
-    return c.String(http.StatusOK, "Hello")
+func newGroceryList(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	// We can now check the user using claims.UserName
+
+	groceries := GroceryList{
+		User: claims.Uid,
+		Id:   "123",
+		Groceries: []Grocery{
+			Grocery{},
+		},
+	}
+
+	return c.JSON(http.StatusOK, groceries)
 }
 
 func main() {
@@ -63,27 +91,28 @@ func main() {
 
 	e := echo.New()
 
-    // Default route
-    e.GET("/", func(c echo.Context) error {
-        return c.HTML(http.StatusOK, "Hello Kitty")
-    })
-    // Post to get token
-    e.POST("/sign", sign)
+	e.Use(middleware.Logger())
+	// Default route
+	e.GET("/", func(c echo.Context) error {
+		return c.HTML(http.StatusOK, "Hello Kitty")
+	})
+	// Post to get token
+	e.POST("/sign", sign)
 
-    // Group that requires jwt token
-    r := e.Group("/list")
+	// Group that requires jwt token
+	r := e.Group("/groceries")
 
-    // Configure jwt
-    config := middleware.JWTConfig{
-        Claims: &jwtCustomClaims{},
-        SigningKey: []byte(secret),
-    }
+	// Configure jwt
+	config := middleware.JWTConfig{
+		Claims:     &jwtCustomClaims{},
+		SigningKey: []byte(secret),
+	}
 
-    // Use middleware with config
-    r.Use(middleware.JWTWithConfig(config))
+	// Use middleware with config
+	r.Use(middleware.JWTWithConfig(config))
 
-    // Restricted routes
-    r.GET("/new", list)
+	// Restricted routes
+	r.POST("", newGroceryList)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
