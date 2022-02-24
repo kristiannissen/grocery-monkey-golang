@@ -140,6 +140,11 @@ func main() {
 		}
 		defer db.Close()
 
+        // Create tables
+        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS users (id serial not null, username varchar not null, uuid text not null, when_created timestamp)"); err != nil {
+            return err
+        }
+
 		return c.String(http.StatusOK, "Hello Pussy")
 	})
 
