@@ -31,7 +31,7 @@ type (
 	GroceryList struct {
 		User        string    `json:"user"`
 		Subscribers []string  `json:"subscribers"`
-		Id          string    `json:"id"`
+        Id          string    `json:"id" param:"id"`
 		Groceries   []Grocery `json:"groceries"`
 	}
 )
@@ -64,9 +64,9 @@ func sign(c echo.Context) error {
 	}
 
 	// Response with token
-	return c.JSON(http.StatusOK, echo.Map{
+	return c.JSONPretty(http.StatusOK, echo.Map{
 		"token": t,
-	})
+	}, "  ")
 }
 
 // Restricted handlers
@@ -87,7 +87,7 @@ func newGroceryList(c echo.Context) error {
 		},
 	}
 
-	return c.JSON(http.StatusOK, groceries)
+	return c.JSONPretty(http.StatusOK, groceries, "  ")
 }
 
 // Update grocerylist
@@ -99,7 +99,7 @@ func updateGroceryList(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, groceries)
+	return c.JSONPretty(http.StatusOK, groceries, "  ")
 }
 
 // Delete grocerylist
@@ -141,10 +141,10 @@ func main() {
 	r.POST("", newGroceryList)
 
 	// Update grocery list
-	r.PUT("/update", updateGroceryList)
+    r.PUT("/:id/update", updateGroceryList)
 
 	// Delete grocery list
-	r.DELETE("/delete", deleteGroceryList)
+    r.DELETE("/:id/delete", deleteGroceryList)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }

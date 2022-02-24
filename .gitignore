@@ -1,3 +1,4 @@
 pkg/
 .env
 .DS_Store
+httptest/
