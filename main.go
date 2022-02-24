@@ -1,18 +1,22 @@
 package main
 
 import (
-	//"encoding/json"
+	"database/sql"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/lib/pq"
 	"net/http"
 	"os"
 	"time"
 )
 
 // Constant secret
-const secret string = "pussysecret"
+const (
+	secret string = "pussysecret"
+	DB_DNS        = os.Getenv("DATABASE_URL")
+)
 
 type (
 	jwtCustomClaims struct {
@@ -124,10 +128,21 @@ func main() {
 	e.Use(middleware.Logger())
 	// Default route
 	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, "Hello Kitty"+ os.Getenv("DATABASE_URL"))
+		return c.HTML(http.StatusOK, "Hello Kitty")
 	})
 	// Post to get token
 	e.POST("/sign", sign)
+
+	// DB func
+	e.GET("/dbfunc", func(c echo.Context) error {
+		db, err := sql.Open("postgres", DB_DNS)
+		if err != nil {
+			return err
+		}
+		defer db.Close()
+
+		return c.String(http.StatusOK, "Hello Pussy")
+	})
 
 	// Join grocerylist
 	e.GET("/join/:id", joinGroceryList)
