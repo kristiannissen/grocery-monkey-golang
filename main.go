@@ -31,7 +31,7 @@ type (
 	GroceryList struct {
 		User        string    `json:"user"`
 		Subscribers []string  `json:"subscribers"`
-        Id          string    `json:"id" param:"id"`
+		Id          string    `json:"id" param:"id"`
 		Groceries   []Grocery `json:"groceries"`
 	}
 )
@@ -141,10 +141,10 @@ func main() {
 	r.POST("", newGroceryList)
 
 	// Update grocery list
-    r.PUT("/:id/update", updateGroceryList)
+	r.PUT("/:id/update", updateGroceryList)
 
 	// Delete grocery list
-    r.DELETE("/:id/delete", deleteGroceryList)
+	r.DELETE("/:id/delete", deleteGroceryList)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
