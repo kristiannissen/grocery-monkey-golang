@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -125,31 +126,20 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
+
+	// DB setup
+	db, err := sql.Open("postgres", os.Getenv("Databas_URL"))
+	if err != nil {
+		log.Fatal("DB ERROR %q", err)
+	}
+	defer db.Close()
+
 	// Default route
 	e.GET("/", func(c echo.Context) error {
 		return c.HTML(http.StatusOK, "Hello Kitty")
 	})
 	// Post to get token
 	e.POST("/sign", sign)
-
-	// DB func
-	e.GET("/dbfunc", func(c echo.Context) error {
-		db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
-		if err != nil {
-			return err
-		}
-		defer db.Close()
-
-		// Create tables
-		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS users (id serial not null, username varchar not null, uuid text not null, when_created timestamp)"); err != nil {
-			return err
-		}
-		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS grocerylists (user_uuid text not null, subscribers text, id serial not null, content jsonb, uuid text not null)"); err != nil {
-			return err
-		}
-
-		return c.String(http.StatusOK, "Hello Pussy")
-	})
 
 	// Join grocerylist
 	e.GET("/join/:id", joinGroceryList)
