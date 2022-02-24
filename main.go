@@ -15,7 +15,6 @@ import (
 // Constant secret
 const (
 	secret string = "pussysecret"
-	DB_DNS        = os.Getenv("DATABASE_URL")
 )
 
 type (
@@ -135,7 +134,7 @@ func main() {
 
 	// DB func
 	e.GET("/dbfunc", func(c echo.Context) error {
-		db, err := sql.Open("postgres", DB_DNS)
+		db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 		if err != nil {
 			return err
 		}
