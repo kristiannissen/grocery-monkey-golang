@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	_ "github.com/lib/pq"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -42,13 +42,13 @@ type (
 
 // Handlers
 func sign(c echo.Context) error {
-	username := c.FormValue("username")
+	username := c.FormValue("user_name")
 	// Generate a new UUID
 	uuid := uuid.New()
 
 	// Check form value
 	if username == "" {
-		return echo.ErrUnauthorized
+		// return echo.ErrUnauthorized
 	}
 	// Set custom claims
 	claims := &jwtCustomClaims{
@@ -130,7 +130,7 @@ func main() {
 
 	// Config cors
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"https://grocery-monkey-javascript.vercel.app"},
+		AllowOrigins: []string{"http://localhost:3000"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
