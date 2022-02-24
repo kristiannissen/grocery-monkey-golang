@@ -140,10 +140,13 @@ func main() {
 		}
 		defer db.Close()
 
-        // Create tables
-        if _, err := db.Exec("CREATE TABLE IF NOT EXISTS users (id serial not null, username varchar not null, uuid text not null, when_created timestamp)"); err != nil {
-            return err
-        }
+		// Create tables
+		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS users (id serial not null, username varchar not null, uuid text not null, when_created timestamp)"); err != nil {
+			return err
+		}
+		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS grocerylists (user_uuid text not null, subscribers text, id serial not null, content jsonb, uuid text not null)"); err != nil {
+			return err
+		}
 
 		return c.String(http.StatusOK, "Hello Pussy")
 	})
