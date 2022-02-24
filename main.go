@@ -124,7 +124,7 @@ func main() {
 	e.Use(middleware.Logger())
 	// Default route
 	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, "Hello Kitty")
+		return c.HTML(http.StatusOK, "Hello Kitty"+ os.Getenv("DATABASE_URL"))
 	})
 	// Post to get token
 	e.POST("/sign", sign)
