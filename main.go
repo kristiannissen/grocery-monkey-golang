@@ -126,6 +126,13 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	// Config cors
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 
 	// DB setup
 	db, err := sql.Open("postgres", os.Getenv("Databas_URL"))
