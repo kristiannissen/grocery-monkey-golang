@@ -107,6 +107,11 @@ func deleteGroceryList(c echo.Context) error {
 	return c.String(http.StatusOK, "Deleted")
 }
 
+// Share list
+func joinGroceryList(c echo.Context) error {
+	return c.String(http.StatusOK, "Joined")
+}
+
 func main() {
 	var port string = os.Getenv("PORT")
 
@@ -123,6 +128,9 @@ func main() {
 	})
 	// Post to get token
 	e.POST("/sign", sign)
+
+	// Join grocerylist
+	e.GET("/join/:id", joinGroceryList)
 
 	// Group that requires jwt token
 	r := e.Group("/groceries")
