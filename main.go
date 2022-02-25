@@ -106,6 +106,20 @@ func updateGroceryList(c echo.Context) error {
 	return c.JSONPretty(http.StatusOK, groceries, "  ")
 }
 
+// Show specific list
+func showGroceryList(c echo.Context) error {
+	id := c.Param("id")
+	// Get the user
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	// Return the list
+	groceries := new(GroceryList)
+	groceries.User = claims.Uid
+	groceries.Id = id
+
+	return c.JSONPretty(http.StatusOK, groceries, "  ")
+}
+
 // Delete grocerylist
 func deleteGroceryList(c echo.Context) error {
 	return c.String(http.StatusOK, "Deleted")
@@ -169,6 +183,9 @@ func main() {
 
 	// Update grocery list
 	r.PUT("/:id/update", updateGroceryList)
+
+	// Show grocery list
+	r.GET("/:id", showGroceryList)
 
 	// Delete grocery list
 	r.DELETE("/:id/delete", deleteGroceryList)
