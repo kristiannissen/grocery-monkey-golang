@@ -26,10 +26,8 @@ type (
 	}
 
 	Grocery struct {
-		Name     string `json:"name"`
-		Quantity int    `json:"qty"`
-		Unit     string `json:"unit"`
-		Store    string `json:"store"`
+		Name string `json:"name"`
+		Id   string `json:"id"`
 	}
 
 	GroceryList struct {
@@ -41,8 +39,8 @@ type (
 )
 
 // Handlers
-func sign(c echo.Context) error {
-	username := c.FormValue("user_name")
+func authenticate(c echo.Context) error {
+	username := c.FormValue("username")
 	// Generate a new UUID
 	uuid := uuid.New()
 
@@ -79,6 +77,8 @@ func newGroceryList(c echo.Context) error {
 	claims := user.Claims.(*jwtCustomClaims)
 	// We can now check the user using claims.UserName
 
+	// TODO: Check if user has a list already,
+	// if not, create a new empty list
 	// Create UUID for the list
 	listUid := uuid.New()
 
@@ -86,9 +86,7 @@ func newGroceryList(c echo.Context) error {
 		User:        claims.Uid,
 		Id:          listUid.String(),
 		Subscribers: []string{"1", "2"},
-		Groceries: []Grocery{
-			Grocery{},
-		},
+		Groceries:   []Grocery{},
 	}
 
 	return c.JSONPretty(http.StatusOK, groceries, "  ")
@@ -102,6 +100,13 @@ func updateGroceryList(c echo.Context) error {
 	if err := c.Bind(groceries); err != nil {
 		return err
 	}
+	// Iterate over groceries and assign uuid
+	g := []Grocery{}
+	for _, v := range groceries.Groceries {
+		v.Id = uuid.New().String()
+		g = append(g, v)
+	}
+	groceries.Groceries = g
 
 	return c.JSONPretty(http.StatusOK, groceries, "  ")
 }
@@ -124,6 +129,8 @@ func main() {
 	}
 
 	e := echo.New()
+	// Logging for debug
+	e.Logger.SetLevel(log.DEBUG)
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -146,7 +153,7 @@ func main() {
 		return c.HTML(http.StatusOK, "Hello Kitty")
 	})
 	// Post to get token
-	e.POST("/sign", sign)
+	e.POST("/authenticate", authenticate)
 
 	// Join grocerylist
 	e.GET("/join/:id", joinGroceryList)
