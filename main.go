@@ -19,6 +19,11 @@ const (
 )
 
 type (
+	User struct {
+		UserName string `json:"username" form:"username"`
+		Uuid     string `json:"uuid" form:"uuid"`
+	}
+
 	jwtCustomClaims struct {
 		UserName string `json:"username"`
 		Uid      string `json:"uid"`
@@ -40,32 +45,37 @@ type (
 
 // Handlers
 func authenticate(c echo.Context) error {
-	username := c.FormValue("username")
-	// Generate a new UUID
-	uuid := uuid.New()
-
-	// Check form value
-	if username == "" {
-		// return echo.ErrUnauthorized
+	// Create a new user
+	user := new(User)
+	if err := c.Bind(user); err != nil {
+		log.Warn("User not in request")
+		return echo.ErrUnauthorized
 	}
-	// Set custom claims
+	// Check if username is empty
+	if user.UserName == "" {
+		log.Warn("Empty username in request")
+		return echo.ErrUnauthorized
+	}
+
+	// Add Uuid
+	user.Uuid = uuid.New().String()
+
+	// Create Claims
 	claims := &jwtCustomClaims{
-		username,
-		uuid.String(),
+		user.UserName,
+		user.Uuid,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},
 	}
-
-	// Create token
+	// Create the token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// Generate token
+	// Sign token
 	t, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return err
 	}
 
-	// Response with token
 	return c.JSONPretty(http.StatusOK, echo.Map{
 		"token": t,
 	}, "  ")
