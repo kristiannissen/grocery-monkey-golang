@@ -75,9 +75,17 @@ func authenticate(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	// Faking a new list
+	groceries := GroceryList{
+		User:        user.Uuid,
+		Id:          uuid.New().String(),
+		Subscribers: []string{},
+		Groceries:   []Grocery{},
+	}
 
 	return c.JSONPretty(http.StatusOK, echo.Map{
-		"token": t,
+		"token":     t,
+		"groceries": groceries,
 	}, "  ")
 }
 
