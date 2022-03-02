@@ -185,13 +185,13 @@ func main() {
 		return c.HTML(http.StatusOK, "Hello Kitty")
 	})
 	// Post to get token
-	e.POST("/authenticate", authenticate)
+	e.POST("/api/authenticate", authenticate)
 
 	// Join grocerylist
-	e.GET("/join/:id", joinGroceryList)
+	e.GET("/api/join/:id", joinGroceryList)
 
 	// Group that requires jwt token
-	r := e.Group("/groceries")
+	r := e.Group("/api/groceries")
 
 	// Configure jwt
 	config := middleware.JWTConfig{
