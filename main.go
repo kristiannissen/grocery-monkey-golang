@@ -58,11 +58,11 @@ func (h *Handler) Home(c echo.Context) error {
 func (h *Handler) DBFuncs(c echo.Context) error {
     defer h.DB.Close()
 
-    _, err := h.DB.Exec("DROP TABLE IF EXISTS users"); if err != nil {
-        return err
+    _, err1 := h.DB.Exec("DROP TABLE IF EXISTS users"); if err != nil {
+        return err1
     }
-    _, err := h.DB.Exec("DROP TABLE IF EXISTS grocerylists"); if err != nil {
-        return err
+    _, err2 := h.DB.Exec("DROP TABLE IF EXISTS grocerylists"); if err != nil {
+        return err2
     }
 
     return c.HTML(http.StatusOK, "Done")
