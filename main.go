@@ -55,6 +55,19 @@ func (h *Handler) Home(c echo.Context) error {
 	return c.HTML(http.StatusOK, "Hello Kitty")
 }
 
+func (h *Handler) DBFuncs(c echo.Context) error {
+    defer h.DB.Close()
+
+    _, err := h.DB.Exec("DROP TABLE IF EXISTS users"); if err != nil {
+        return err
+    }
+    _, err := h.DB.Exec("DROP TABLE IF EXISTS grocerylists"); if err != nil {
+        return err
+    }
+
+    return c.HTML(http.StatusOK, "Done")
+}
+
 func authenticate(c echo.Context) error {
 	// Create a new user
 	user := new(User)
@@ -195,6 +208,7 @@ func main() {
 
 	// Default route
 	e.GET("/", h.Home)
+    e.GET("/dbfuncs", h.DBFuncs)
 	// Post to get token
 	e.POST("/api/authenticate", authenticate)
 
