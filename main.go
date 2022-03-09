@@ -41,9 +41,20 @@ type (
 		Id          string    `json:"id" param:"id"`
 		Groceries   []Grocery `json:"groceries"`
 	}
+
+	Handler struct {
+		DB *sql.DB
+	}
 )
 
 // Handlers
+func (h *Handler) Home(c echo.Context) error {
+	// Close DB
+	defer h.DB.Close()
+
+	return c.HTML(http.StatusOK, "Hello Kitty")
+}
+
 func authenticate(c echo.Context) error {
 	// Create a new user
 	user := new(User)
@@ -178,12 +189,12 @@ func main() {
 	if err != nil {
 		log.Fatal("DB ERROR %q", err)
 	}
-	defer db.Close()
+
+	// Initialize handlers
+	h := Handler{DB: db}
 
 	// Default route
-	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, "Hello Kitty")
-	})
+	e.GET("/", h.Home)
 	// Post to get token
 	e.POST("/api/authenticate", authenticate)
 
