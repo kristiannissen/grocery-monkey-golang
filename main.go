@@ -58,7 +58,7 @@ func (h *Handler) Home(c echo.Context) error {
 func (h *Handler) DBFuncs(c echo.Context) error {
     defer h.DB.Close()
 
-    if _, err := h.DB.Exec("DROP TABLE users"); err != nil {
+    if _, err := h.DB.Exec("DROP TABLE grocerylists"); err != nil {
         log.Fatal("DB Error %q", err)
         return err
     }
