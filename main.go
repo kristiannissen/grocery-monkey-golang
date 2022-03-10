@@ -65,6 +65,32 @@ func (h *Handler) DBFuncs(c echo.Context) error {
 
     return c.HTML(http.StatusOK, "Done")
 }
+// Authenticate user
+func (h *Handler) AuthenticateUser(c echo.Context) error {
+    // Handle incoming request
+    user := new(User)
+    if err := c.Bind(user); err != nil {
+        log.Warn("User not in request")
+		return echo.ErrUnauthorized
+    }
+    if user.UserName == "" {
+        log.Warn("Username is blank")
+		return echo.ErrUnauthorized
+    }
+    // Check if user exists
+    row := h.DB.QueryRow("SELECT nickname, uuid FROM users WHERE nickname = $1 LIMIT 1", user.UserName)
+    rowErr := row.Scan(&user.UserName, &user.uuid)
+    if rowErr == sql.ErrNoRows {
+        // No user found
+	    user.Uuid = uuid.New().String()
+        _, resErr := h.DB.Exec("INSERT INTO USERS (nickname, uuid) VALUES ($1, $2)", user.UserName, user.Uuid)
+        if resErr != nil {
+            log.Warn("Insert error %q", resErr)
+            return c.HTML(http.StatusStatus(500), "Error")
+        }
+    }
+}
+
 
 func authenticate(c echo.Context) error {
 	// Create a new user
