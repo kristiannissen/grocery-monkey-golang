@@ -196,7 +196,7 @@ func main() {
 	}))
 
 	// DB setup
-	db, err := sql.Open("postgres", os.Getenv("Databas_URL"))
+	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("DB ERROR %q", err)
 	}
