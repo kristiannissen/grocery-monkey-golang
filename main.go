@@ -58,7 +58,7 @@ func (h *Handler) Home(c echo.Context) error {
 func (h *Handler) DBFuncs(c echo.Context) error {
     defer h.DB.Close()
 
-    if _, err := h.DB.Exec("CREATE TABLE user (id serial NOT NULL, nickname varchar, uuid varchar)"); err != nil {
+    if _, err := h.DB.Exec("CREATE TABLE users (id serial NOT NULL, nickname varchar, uuid varchar)"); err != nil {
         log.Fatal("DB Error %q", err)
         return err
     }
