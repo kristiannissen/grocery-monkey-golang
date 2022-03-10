@@ -58,7 +58,7 @@ func (h *Handler) Home(c echo.Context) error {
 func (h *Handler) DBFuncs(c echo.Context) error {
     defer h.DB.Close()
 
-    if _, err := h.DB.Exec("DROP TABLE grocerylists"); err != nil {
+    if _, err := h.DB.Exec("CREATE TABLE grocerylist (id uuid PRIMARY KEY DEFAULT uudi_generate_v4(), content jsonb)"); err != nil {
         log.Fatal("DB Error %q", err)
         return err
     }
