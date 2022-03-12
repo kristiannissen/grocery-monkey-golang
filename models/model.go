@@ -20,6 +20,6 @@ func init() {
     var err error
     DB, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
     if err != nil {
-        log.Fatal(err)
+        log.Fatalf("Models %q", (err))
     }
 }
