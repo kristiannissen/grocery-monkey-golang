@@ -1,10 +1,10 @@
 package models
 
 import (
-    "log"
     "os"
-    // "database/sql"
-    // _ "github.com/lib/pq"
+    "log"
+    "database/sql"
+    _ "github.com/lib/pq"
 )
 
 type (
@@ -12,11 +12,14 @@ type (
 )
 
 var (
-    DB string
+    DB *sql.DB
 )
 
 // Is loaded when any model is loaded
 func init() {
-    log.Println("Hello from models.init()")
-    DB = os.Getenv("DATABASE_URL") 
+    var err error
+    DB, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
+    if err != nil {
+        log.Fatal(err)
+    }
 }
