@@ -4,14 +4,15 @@ import (
     "testing"
 )
 
+var (
+    m Model = Model{}
+)
+
 // Setup
 func init() {
-    
 }
 
 func TestCreateUser(t *testing.T) {
-    m := Model{}
-    m.SetUp()
 
     user := m.CreateUser("Kitty")
 
@@ -27,13 +28,22 @@ func TestUser(t *testing.T) {
         {"GetUser", "Kitty", "Kitty"},
     }
 
-    m := Model{}
-    m.SetUp()
-
     for _, tt := range tests {
         if m.GetUser(tt.got).NickName != tt.want {
             t.Errorf("Test %s: Got %s - want %s", tt.name, m.GetUser(tt.got).NickName, tt.want)
         }
     }
     // m.TearDown()
+}
+
+func TestCreateGroceryList(t *testing.T) {
+    t.Skip("Not implemented yet")
+}
+
+func TestUpdateGroceryList(t *testing.T) {
+    t.Skip("Not implemented yet")
+}
+
+func TestGetGroceryList(t *testing.T) {
+    t.Skip("Not implemented yet")
 }
