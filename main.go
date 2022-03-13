@@ -1,13 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"github.com/kristiannissen/grocery-monkey-golang/models"
-	"os"
+  "fmt"
 )
 
 func main() {
-	m := models.Model{}
-	fmt.Println(m.GetUser("Kitty"))
-	fmt.Println(os.Getenv("DATABASE_URL"))
+	fmt.Println("hello kitty")
 }
