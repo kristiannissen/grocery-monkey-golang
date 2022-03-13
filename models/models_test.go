@@ -1,13 +1,13 @@
 package models
 
 import (
-    "testing"
-    "os"
+	"os"
+	"testing"
 )
 
 func TestMain(m *testing.M) {
 
-    code := m.Run()
+	code := m.Run()
 
-    os.Exit(code)
+	os.Exit(code)
 }
