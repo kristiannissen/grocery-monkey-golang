@@ -2,6 +2,7 @@ package models
 
 import (
     "log"
+    "github.com/google/uuid"
 )
 
 type (
@@ -18,34 +19,41 @@ type (
     }
 )
 
-func GroceryListSetUp(m *Model) {
+func (m *Model) GroceryListSetUp() {
     _, err := db.Exec("CREATE TABLE IF NOT EXISTS grocerylist (grocerylist_id serial PRIMARY KEY, content jsonb, user_uid VARCHAR(255) NOT NULL)") 
     if err != nil {
         log.Fatalf("Create statement %q", err)
     }
 }
 
-func GroceryListTearDown(m *Model) {
+func (m *Model) GroceryListTearDown() {
     _, err := db.Exec("DROP TABLE IF EXISTS grocerylist")
     if err != nil {
         log.Fatalf("Drop statement %q", err)
     }
 }
 
-func GetGroceryList(m *Model) *GroceryList {
+func (m *Model) GetGroceryList() *GroceryList {
     groceryList := new(GroceryList)
 
    return groceryList
 }
 
-func CreateGroceryList(m *Model) *GroceryList {
+func (m *Model) CreateGroceryList(g *GroceryList) *GroceryList {
+    groceryList := g
+
+   return groceryList
+}
+
+func (m *Model) UpdateGroceryList() *GroceryList {
     groceryList := new(GroceryList)
 
    return groceryList
 }
 
-func UpdateGroceryList(m *Model) *GroceryList {
+func (m *Model) NewGroceryList() *GroceryList {
     groceryList := new(GroceryList)
+    groceryList.Uuid = uuid.New().String()
 
-   return groceryList
+    return groceryList
 }

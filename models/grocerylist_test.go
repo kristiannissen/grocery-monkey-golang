@@ -2,12 +2,17 @@ package models
 
 import (
     "testing"
+    "log"
 )
 
 func init() {
 }
 
 func TestCreateGroceryList(t *testing.T) {
+    
+    grocerylist := m.NewGroceryList()
+    log.Println(grocerylist)
+
     t.Skip("Not implemented yet")
 }
 
