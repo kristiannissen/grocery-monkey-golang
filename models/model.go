@@ -12,13 +12,13 @@ type (
 )
 
 var (
-    DB *sql.DB
+    db *sql.DB
 )
 
 // Is loaded when any model is loaded
 func init() {
     var err error
-    DB, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
+    db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
     if err != nil {
         log.Fatalf("Models %q", (err))
     }
