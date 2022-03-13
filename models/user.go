@@ -72,3 +72,10 @@ func (m *Model) CreateUser(nickname string) *User {
 
     return user
 }
+
+func (m *Model) NewUser() *User {
+    user := new(User)
+    user.Uuid = uuid.New().String()
+
+    return user
+}
