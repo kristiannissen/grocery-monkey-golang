@@ -1,7 +1,7 @@
-module grocery-monkey-golang
+module github.com/kristiannissen/grocery-monkey-golang
 
-// +heroku goVersion go1.17
 go 1.17
+<<<<<<< HEAD
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -22,3 +22,5 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect
 )
+=======
+>>>>>>> remotes/origin/issue5

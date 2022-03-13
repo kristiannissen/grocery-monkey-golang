@@ -1,6 +1,7 @@
 package main
 
 import (
+<<<<<<< HEAD
 	"database/sql"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
@@ -268,4 +269,13 @@ func main() {
 	r.DELETE("/:id/delete", deleteGroceryList)
 
 	e.Logger.Fatal(e.Start(":" + port))
+=======
+  "fmt"
+  "github.com/kristiannissen/grocery-monkey-golang/models"
+)
+
+func main() {
+  m := models.Model{}
+	fmt.Println(m.GetUser("Kitty"))
+>>>>>>> remotes/origin/issue5
 }
