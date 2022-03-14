@@ -8,8 +8,8 @@ import (
 
 type (
 	User struct {
-		NickName string
-		Uuid     string
+        NickName string `json:"nickname"`
+        Uuid     string `json:"uuid"`
 	}
 )
 
