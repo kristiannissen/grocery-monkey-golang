@@ -29,7 +29,6 @@ func TestGetUserNotFound(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	// m.UserSetUp()
 
 	user := m.CreateUser("Pussy")
 

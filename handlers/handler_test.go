@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	userJSON = `{"username": "Hello Kitty"}`
+	userJSON = `{"nickname": "Hello Kitty"}`
 )
 
 type (
@@ -36,7 +36,7 @@ func TestIndex(t *testing.T) {
 	}
 }
 
-func TestAPIAuthenticate(t *testing.T) {
+func TestAPIAuthenticateFailed(t *testing.T) {
 
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodPost, "/api/authenticate", strings.NewReader(userJSON))
@@ -50,12 +50,13 @@ func TestAPIAuthenticate(t *testing.T) {
 	res := Response{}
 	json.Unmarshal([]byte(rec.Body.String()), &res)
 
-	if res.Token != "" {
+	if rec.Code != 401 {
 		t.Error("JWT token not returned")
 	}
 }
 
-func TestAPICreateUser(t *testing.T) {
+func TestAPIAuthenticateSuccess(t *testing.T) {
+	// time.Now().UnixNano() to create a random number
 	t.Skip("Not implemented yet")
 }
 

@@ -75,7 +75,7 @@ func (m *Model) NewGroceryList() *GroceryList {
 	groceryList := new(GroceryList)
 	groceryList.Uuid = uuid.New().String()
 	groceryList.Groceries = []Grocery{}
-    groceryList.Subscribers = []string{}
+	groceryList.Subscribers = []string{}
 
 	return groceryList
 }

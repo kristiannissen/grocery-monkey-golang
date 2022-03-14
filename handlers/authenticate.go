@@ -4,7 +4,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/kristiannissen/grocery-monkey-golang/models"
 	"github.com/labstack/echo/v4"
-	"log"
+	_ "log"
 	"net/http"
 	"time"
 )
@@ -24,12 +24,18 @@ const (
 func (h *Handler) Authenticate(c echo.Context) error {
 
 	m := models.Model{}
-	user := m.NewUser()
+	u := m.NewUser()
 
-	if err := c.Bind(user); err != nil {
-		log.Println("Could not bind")
-		return echo.ErrUnauthorized
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusUnauthorized, "Request Error")
 	}
+
+	user, err := m.GetUser(u.NickName)
+	if err != nil {
+		return c.String(http.StatusUnauthorized, "User exists")
+	}
+
+	user = m.CreateUser(u.NickName)
 
 	groceryList := m.NewGroceryList()
 	groceryList.UserUuid = user.Uuid
@@ -45,10 +51,10 @@ func (h *Handler) Authenticate(c echo.Context) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	t, err := token.SignedString([]byte(secret))
 	if err != nil {
-		return err
+		return c.String(http.StatusUnauthorized, "JWT error")
 	}
 
-	return c.JSONPretty(http.StatusOK, echo.Map{
+	return c.JSONPretty(http.StatusCreated, echo.Map{
 		"token":     t,
 		"groceries": groceryList,
 	}, "  ")
