@@ -1,18 +1,18 @@
 package handlers
 
 import (
-  "github.com/labstack/echo/v4"
-  "net/http"
+	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
 func init() {
-  
+
 }
 
 type (
-  Handler struct {}
+	Handler struct{}
 )
 
-func (h *Handler) Index (c echo.Context) error {
-  return c.String(http.StatusOK, "Hello Kitty")
+func (h *Handler) Index(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello Kitty")
 }
