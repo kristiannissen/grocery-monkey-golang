@@ -10,6 +10,7 @@ var (
 )
 
 func init() {
+	m.UserTearDown()
 	m.UserSetUp()
 }
 
