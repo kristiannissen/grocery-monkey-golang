@@ -22,25 +22,31 @@ const (
 )
 
 func (h *Handler) Authenticate(c echo.Context) error {
+	var err error
 
 	m := models.Model{}
 	u := m.NewUser()
 
-	if err := c.Bind(u); err != nil {
+	if err = c.Bind(u); err != nil {
+		log.Printf("Request Error %s", err)
 		return c.String(http.StatusUnauthorized, "Request Error")
 	}
 
-	user, _ := m.GetUser(u.NickName)
-	if user.NickName != "" {
-		return c.String(http.StatusUnauthorized, "User exists")
-	}
+	user := new(models.User)
 
-	// Create a new user
-	log.Printf("User is %q", user)
-	user = m.CreateUser(u.NickName)
+	user, err = m.GetUser(u.NickName)
+	if err != nil {
+		// User was not found and will be created
+		user, err = m.CreateUser(u.NickName)
+		if err != nil {
+			log.Printf("User could not be created %s", err)
+			return c.String(http.StatusInternalServerError, "User could not be created")
+		}
+	}
 
 	groceryList := m.NewGroceryList()
 	groceryList.UserUuid = user.Uuid
+	groceryList.Subscribers = append(groceryList.Subscribers, user.Uuid)
 
 	claims := &jwtCustomClaims{
 		user.NickName,
@@ -53,7 +59,8 @@ func (h *Handler) Authenticate(c echo.Context) error {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	t, err := token.SignedString([]byte(secret))
 	if err != nil {
-		return c.String(http.StatusUnauthorized, "JWT error")
+		log.Printf("JWT token error %s", err)
+		return c.String(http.StatusInternalServerError, "JWT error")
 	}
 
 	return c.JSONPretty(http.StatusCreated, echo.Map{

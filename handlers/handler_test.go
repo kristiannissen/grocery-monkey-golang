@@ -2,8 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/kristiannissen/grocery-monkey-golang/models"
 	"github.com/labstack/echo/v4"
-	"log"
+	_ "log"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -12,13 +13,10 @@ import (
 	"time"
 )
 
-var (
-	userJSON = `{"nickname": "Hello Kitty"}`
-)
-
 type (
 	Response struct {
 		Token string `json:"token"`
+		Body  string
 	}
 )
 
@@ -38,31 +36,15 @@ func TestIndex(t *testing.T) {
 	}
 }
 
-func TestAPIAuthenticateFailed(t *testing.T) {
+func TestAPIAuthenticateNewUser(t *testing.T) {
+	m := &models.Model{}
+	m.CleanUserTable()
 
-	e := echo.New()
-	req := httptest.NewRequest(http.MethodPost, "/api/authenticate", strings.NewReader(userJSON))
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-
-	h := &Handler{}
-	h.Authenticate(c)
-
-	res := Response{}
-	json.Unmarshal([]byte(rec.Body.String()), &res)
-
-	if rec.Code != 401 {
-		log.Println(rec.Code)
-		t.Error("Unauthorized access")
-	}
-}
-
-func TestAPIAuthenticateSuccess(t *testing.T) {
 	userStr := "{\"nickname\":\"" + strconv.FormatInt(time.Now().UnixNano(), 10) + "-Kitty\"}"
 
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodPost, "/api/authenticate", strings.NewReader(userStr))
+	req := httptest.NewRequest(
+		http.MethodPost, "/api/authenticate", strings.NewReader(userStr))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
@@ -71,11 +53,11 @@ func TestAPIAuthenticateSuccess(t *testing.T) {
 	h.Authenticate(c)
 
 	res := Response{}
-	json.Unmarshal([]byte(rec.Body.String()), &res)
-	log.Println("test")
+	body := rec.Body.String()
+	json.Unmarshal([]byte(body), &res)
 
 	if rec.Code != 201 {
-		t.Skip("Not implemented yet")
+		t.Errorf("Status %d Body %q", rec.Code, body)
 	}
 }
 
