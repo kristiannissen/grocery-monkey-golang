@@ -39,10 +39,6 @@ func (m *Model) CleanUserDatabase() {
 func (m *Model) GetUser(nickname string) (*User, error) {
 	var err error
 
-	if err = db.Ping(); err != nil {
-		log.Fatalf("User %q", err)
-	}
-
 	row := db.QueryRow("SELECT nickname, uuid FROM users WHERE nickname = $1 LIMIT 1", nickname)
 
 	user := new(User)
@@ -57,18 +53,11 @@ func (m *Model) GetUser(nickname string) (*User, error) {
 func (m *Model) CreateUser(nickname string) *User {
 	user := new(User)
 	user.NickName = nickname
-	user.Uuid = uuid.New().String()
 
-	res, err := db.Exec(
+	_, err := db.Exec(
 		"INSERT INTO users (nickname, uuid) VALUES ($1, $2)", user.NickName, user.Uuid)
 	if err != nil {
 		log.Fatalf("Insert statement error %q", err)
-		return nil
-	}
-
-	rows, err := res.RowsAffected()
-	if err != nil {
-		log.Fatal(rows)
 		return nil
 	}
 

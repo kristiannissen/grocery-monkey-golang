@@ -4,7 +4,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/kristiannissen/grocery-monkey-golang/models"
 	"github.com/labstack/echo/v4"
-	_ "log"
+	"log"
 	"net/http"
 	"time"
 )
@@ -30,11 +30,13 @@ func (h *Handler) Authenticate(c echo.Context) error {
 		return c.String(http.StatusUnauthorized, "Request Error")
 	}
 
-	user, err := m.GetUser(u.NickName)
-	if err != nil {
+	user, _ := m.GetUser(u.NickName)
+	if user.NickName != "" {
 		return c.String(http.StatusUnauthorized, "User exists")
 	}
 
+	// Create a new user
+	log.Printf("User is %q", user)
 	user = m.CreateUser(u.NickName)
 
 	groceryList := m.NewGroceryList()

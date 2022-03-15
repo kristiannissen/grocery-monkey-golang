@@ -3,11 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"github.com/labstack/echo/v4"
-	_ "log"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 var (
@@ -51,13 +53,30 @@ func TestAPIAuthenticateFailed(t *testing.T) {
 	json.Unmarshal([]byte(rec.Body.String()), &res)
 
 	if rec.Code != 401 {
-		t.Error("JWT token not returned")
+		log.Println(rec.Code)
+		t.Error("Unauthorized access")
 	}
 }
 
 func TestAPIAuthenticateSuccess(t *testing.T) {
-	// time.Now().UnixNano() to create a random number
-	t.Skip("Not implemented yet")
+	userStr := "{\"nickname\":\"" + strconv.FormatInt(time.Now().UnixNano(), 10) + "-Kitty\"}"
+
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/api/authenticate", strings.NewReader(userStr))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	h := &Handler{}
+	h.Authenticate(c)
+
+	res := Response{}
+	json.Unmarshal([]byte(rec.Body.String()), &res)
+	log.Println("test")
+
+	if rec.Code != 201 {
+		t.Skip("Not implemented yet")
+	}
 }
 
 func TestAPICreateGroceryList(t *testing.T) {
