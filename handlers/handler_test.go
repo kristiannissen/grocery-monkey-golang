@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/kristiannissen/grocery-monkey-golang/models"
 	"github.com/labstack/echo/v4"
-	_ "log"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -56,13 +56,39 @@ func TestAPIAuthenticateNewUser(t *testing.T) {
 	body := rec.Body.String()
 	json.Unmarshal([]byte(body), &res)
 
-	if rec.Code != 201 {
+	if rec.Code != 200 {
 		t.Errorf("Status %d Body %q", rec.Code, body)
 	}
 }
 
 func TestAPICreateGroceryList(t *testing.T) {
-	t.Skip("Not implemented yet")
+	groceryData := `{
+    "uuid": "e3357dac-a275-41f7-87ef-069d91de3c9e",
+    "subscribers": [
+      "bc21cf88-3a4b-4e9d-a34e-35090af0d165"
+    ],
+    "groceries": [],
+    "useruuid": "bc21cf88-3a4b-4e9d-a34e-35090af0d165"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaWNrbmFtZSI6IjE2NDc0MzEyMjcyOTE5NTc3MDAtS2l0dHkiLCJ1dWlkIjoiYmMyMWNmOD
+gtM2E0Yi00ZTlkLWEzNGUtMzUwOTBhZjBkMTY1IiwiZXhwIjoxNjQ3NjkwNDI3fQ.J2lTWXd6P0Cfk8lJmMXFK1uKVuLUHsiibmGVJf6T-LI"
+}`
+
+	e := echo.New()
+	req := httptest.NewRequest(
+		http.MethodPost, "/api/groceries", strings.NewReader(groceryData))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	h := &Handler{}
+	h.CreateGroceryList(c)
+	body := rec.Body.String()
+
+	if rec.Code != 201 {
+		log.Println(body)
+		t.Errorf("Want 201 - got %d", rec.Code)
+	}
 }
 
 func TestAPIUpdateGroceryList(t *testing.T) {

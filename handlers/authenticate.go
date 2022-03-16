@@ -63,7 +63,7 @@ func (h *Handler) Authenticate(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "JWT error")
 	}
 
-	return c.JSONPretty(http.StatusCreated, echo.Map{
+	return c.JSONPretty(http.StatusOK, echo.Map{
 		"token":     t,
 		"groceries": groceryList,
 	}, "  ")
