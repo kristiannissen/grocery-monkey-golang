@@ -92,5 +92,28 @@ gtM2E0Yi00ZTlkLWEzNGUtMzUwOTBhZjBkMTY1IiwiZXhwIjoxNjQ3NjkwNDI3fQ.J2lTWXd6P0Cfk8l
 }
 
 func TestAPIUpdateGroceryList(t *testing.T) {
-	t.Skip("Not implemented yet")
+	groceryData := `{
+    "uuid": "e3357dac-a275-41f7-87ef-069d91de3c9e",
+    "subscribers": [
+      "bc21cf88-3a4b-4e9d-a34e-35090af0d165"
+    ],
+    "groceries": [{"name": "Beer", "id": "1"}],
+    "useruuid": "bc21cf88-3a4b-4e9d-a34e-35090af0d165"
+  }`
+
+	e := echo.New()
+	req := httptest.NewRequest(
+		http.MethodPut, "/api/groceries", strings.NewReader(groceryData))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+
+	h := &Handler{}
+	h.UpdateGroceryList(c)
+	body := rec.Body.String()
+
+	if rec.Code != 200 {
+		log.Println(body)
+		t.Errorf("Want 200 - got %d", rec.Code)
+	}
 }
