@@ -1,7 +1,7 @@
 package main
 
 import (
-"github.com/kristiannissen/grocery-monkey-golang/handlers"
+"github.com/kristiannissen/grocery-monkey-golang/handler"
   "os"
   "github.com/labstack/echo/v4/middleware"
   "github.com/labstack/echo/v4"
@@ -23,7 +23,7 @@ func main() {
   e.Use(middleware.Recover())
 
   // Init the handlers
-	h := &Handler{}
+	h := &handler.Handler{}
   // Say Hello!
   e.GET("/", h.Index)
 

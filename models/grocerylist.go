@@ -67,15 +67,15 @@ func (m *Model) CreateGroceryList(g *GroceryList) (*GroceryList, error) {
 
 func (m *Model) UpdateGroceryList(g *GroceryList) (*GroceryList, error) {
 	// Encode the struct to a string
-  str, err := json.Marshal(g)
-  if err != nil {
-    return nil, err
-  }
-  // Update the grocerylist
-  _, err = db.Exec("UPDATE grocerylist SET groceries = $1 WHERE user_uuid = $2", str, g.UserUuid)
-  if err != nil {
-    return nil, err
-  }
+	str, err := json.Marshal(g)
+	if err != nil {
+		return nil, err
+	}
+	// Update the grocerylist
+	_, err = db.Exec("UPDATE grocerylist SET groceries = $1 WHERE user_uuid = $2", str, g.UserUuid)
+	if err != nil {
+		return nil, err
+	}
 
 	return g, nil
 }

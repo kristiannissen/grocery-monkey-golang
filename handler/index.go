@@ -12,5 +12,3 @@ func init() {
 func (h *Handler) Index(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello Kitty")
 }
-
-
