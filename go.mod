@@ -1,6 +1,6 @@
 module github.com/kristiannissen/grocery-monkey-golang
 
-go 1.18
+go 1.17
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
