@@ -39,7 +39,7 @@ func (m *Model) GroceryListTearDown() {
 func (m *Model) GetGroceryList(user_uuid string) (*GroceryList, error) {
 	g := new(GroceryList)
 	var groceries string
-  // TODO: should be finding based on subscribers
+	// TODO: should be finding based on subscribers
 	row := db.QueryRow("SELECT groceries FROM grocerylist WHERE user_uuid = $1", user_uuid)
 	err := row.Scan(&groceries)
 	if err != nil {

@@ -26,6 +26,8 @@ func main() {
 	h := &handler.Handler{}
   // Say Hello!
   e.GET("/", h.Index)
+  // DB setup
+  e.GET("/setup", h.SetUp)
 
   // Listen & Serve
   e.Logger.Fatal(e.Start(":" + port))
