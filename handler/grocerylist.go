@@ -16,10 +16,9 @@ func (h *Handler) CreateGroceryList(c echo.Context) error {
 		log.Printf("Request Error %s", err)
 		return c.String(http.StatusInternalServerError, "Request Error")
 	}
-	log.Print(g)
 
 	// Store the grocerylist
-	if _, err = m.CreateGroceryList(g); err != nil {
+	if g, err = m.CreateGroceryList(g); err != nil {
 		log.Printf("GroceryList could not be created %q", err)
 		return c.String(http.StatusInternalServerError, "Data Error")
 	}
