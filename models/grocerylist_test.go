@@ -17,8 +17,14 @@ func TestCreateGroceryList(t *testing.T) {
 	// Get a user
 	user := m.NewUser()
 	grocerylist.UserUuid = user.Uuid
+	grocerylist.Groceries = []Grocery{
+		{"Beer", "2"},
+	}
+	// Add the user as a subscriber
+	grocerylist.Subscribers = append(grocerylist.Subscribers, user.Uuid)
 
 	grocerylist, err := m.CreateGroceryList(grocerylist)
+	// log.Print(grocerylist)
 
 	if err != nil {
 		t.Errorf("Grocerylist could not be created %q", err)

@@ -62,7 +62,7 @@ func (m *Model) CreateGroceryList(g *GroceryList) (*GroceryList, error) {
 		return nil, err
 	}
 
-	return g, nil
+	return m.GetGroceryList(g.UserUuid)
 }
 
 func (m *Model) UpdateGroceryList(g *GroceryList) (*GroceryList, error) {
@@ -77,7 +77,7 @@ func (m *Model) UpdateGroceryList(g *GroceryList) (*GroceryList, error) {
 		return nil, err
 	}
 
-	return g, nil
+	return m.GetGroceryList(g.UserUuid)
 }
 
 func (m *Model) NewGroceryList() *GroceryList {
