@@ -28,6 +28,8 @@ func main() {
   e.GET("/", h.Index)
   // DB setup
   e.GET("/setup", h.SetUp)
+  // Authenticate user
+  e.POST("/api/authenticate", h.Authenticate)
 
   // Listen & Serve
   e.Logger.Fatal(e.Start(":" + port))
