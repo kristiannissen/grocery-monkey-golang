@@ -30,6 +30,10 @@ func main() {
   e.GET("/setup", h.SetUp)
   // Authenticate user
   e.POST("/api/authenticate", h.Authenticate)
+  // Groups that require token
+  g := e.Group("/api")
+  // Create groceries
+  g.POST("/groceries", h.CreateGroceryList)
 
   // Listen & Serve
   e.Logger.Fatal(e.Start(":" + port))
