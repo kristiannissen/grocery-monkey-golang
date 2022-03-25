@@ -1,12 +1,24 @@
 package main
 
 import (
+	"github.com/golang-jwt/jwt"
 	"github.com/kristiannissen/grocery-monkey-golang/handler"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	"net/http"
 	"os"
-  "net/http"
+)
+
+type (
+	jwtCustomClaims struct {
+		NickName string `json:"nickname"`
+		jwt.StandardClaims
+	}
+)
+
+const (
+	secret string = "hello-kitty"
 )
 
 func main() {
@@ -22,11 +34,11 @@ func main() {
 	e.Logger.SetLevel(log.DEBUG)
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-  // Add CORS
-  e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-    AllowOrigins: []string{"*"},
-    AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
-  }))
+	// Add CORS
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 
 	// Init the handlers
 	h := &handler.Handler{}
@@ -36,12 +48,21 @@ func main() {
 	e.GET("/setup", h.SetUp)
 	// Authenticate user
 	e.POST("/api/authenticate", h.Authenticate)
+
+	// Config JWT
+	config := middleware.JWTConfig{
+		Claims:     &jwtCustomClaims{},
+		SigningKey: []byte(secret),
+	}
+
 	// Groups that require token
 	g := e.Group("/api")
+	// Add jwt to group
+	g.Use(middleware.JWTWithConfig(config))
 	// Create groceries
 	g.POST("/groceries", h.CreateGroceryList)
 	// Update groceries
-  g.PUT("/groceries", h.UpdateGroceryList)
+	g.PUT("/groceries", h.UpdateGroceryList)
 
 	// Listen & Serve
 	e.Logger.Fatal(e.Start(":" + port))
