@@ -15,8 +15,8 @@ func init() {
 func TestGetUserNotFound(t *testing.T) {
 	_, err := m.GetUser("Pussy")
 
-	if err == nil {
-		t.Error(err)
+	if err != nil {
+		t.Error("Not existing user found")
 	}
 }
 

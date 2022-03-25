@@ -49,5 +49,30 @@ func TestGetGroceryList(t *testing.T) {
 }
 
 func TestUpdateGroceryList(t *testing.T) {
-	t.Skip("Not implemented yet")
+	// Get a new struct
+	grocerylist := m.NewGroceryList()
+	// Get a user
+	user := m.NewUser()
+	grocerylist.UserUuid = user.Uuid
+
+	grocerylist, _ = m.CreateGroceryList(grocerylist)
+	// Update groceries
+	grocerylist.Groceries = []Grocery{
+		{"Beer", "1"},
+		{"More Beer", "2"},
+		{"Even More Beer", "3"},
+	}
+
+	var err error
+
+	grocerylist, err = m.UpdateGroceryList(grocerylist)
+
+	// Test we didn't get an error back
+	if err != nil {
+		t.Errorf("Grocerylist could not be found %q", err)
+	}
+	// Test length of the groceries
+	if len(grocerylist.Groceries) == 0 {
+		t.Error("boom")
+	}
 }
