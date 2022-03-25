@@ -13,6 +13,7 @@ import (
 type (
 	jwtCustomClaims struct {
 		NickName string `json:"nickname"`
+    Uuid string `json:uuid`
 		jwt.StandardClaims
 	}
 )
