@@ -13,13 +13,6 @@ import (
 	"time"
 )
 
-type (
-	Response struct {
-		Token string `json:"token"`
-		Body  string
-	}
-)
-
 func TestIndex(t *testing.T) {
 
 	e := echo.New()
@@ -52,9 +45,7 @@ func TestAPIAuthenticateNewUser(t *testing.T) {
 	h := &Handler{}
 	h.Authenticate(c)
 
-	res := Response{}
 	body := rec.Body.String()
-	json.Unmarshal([]byte(body), &res)
 
 	if rec.Code != 200 {
 		t.Errorf("Status %d Body %q", rec.Code, body)
@@ -84,6 +75,9 @@ gtM2E0Yi00ZTlkLWEzNGUtMzUwOTBhZjBkMTY1IiwiZXhwIjoxNjQ3NjkwNDI3fQ.J2lTWXd6P0Cfk8l
 	h := &Handler{}
 	h.CreateGroceryList(c)
 	body := rec.Body.String()
+	// Transform string to struct
+	g := models.GroceryList{}
+	json.Unmarshal([]byte(body), &g)
 
 	if rec.Code != 201 {
 		log.Println(body)
@@ -97,7 +91,7 @@ func TestAPIUpdateGroceryList(t *testing.T) {
     "subscribers": [
       "bc21cf88-3a4b-4e9d-a34e-35090af0d165"
     ],
-    "groceries": [{"name": "Beer", "id": "1"}],
+    "groceries": [{"name": "Beer", "id": "1"}, {"name": "More Beer", "id": "2"}],
     "useruuid": "bc21cf88-3a4b-4e9d-a34e-35090af0d165"
   }`
 

@@ -47,7 +47,7 @@ func (m *Model) GetGroceryList(user_uuid string) (*GroceryList, error) {
 	}
 	json.Unmarshal([]byte(groceries), &g)
 
-  // log.Println(g)
+	// log.Println(g)
 
 	return g, nil
 }
@@ -63,7 +63,6 @@ func (m *Model) CreateGroceryList(g *GroceryList) (*GroceryList, error) {
 	if err != nil {
 		return nil, err
 	}
-  log.Print(g)
 
 	return m.GetGroceryList(g.UserUuid)
 }

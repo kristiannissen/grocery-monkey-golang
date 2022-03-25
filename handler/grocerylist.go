@@ -23,9 +23,7 @@ func (h *Handler) CreateGroceryList(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Data Error")
 	}
 
-	return c.JSONPretty(http.StatusCreated, echo.Map{
-		"groceries": g,
-	}, "  ")
+	return c.JSONPretty(http.StatusCreated, g, "  ")
 }
 
 func (h *Handler) UpdateGroceryList(c echo.Context) error {
@@ -44,7 +42,5 @@ func (h *Handler) UpdateGroceryList(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Data Error")
 	}
 
-	return c.JSONPretty(http.StatusOK, echo.Map{
-		"groceries": g,
-	}, "  ")
+	return c.JSONPretty(http.StatusOK, g, "  ")
 }
