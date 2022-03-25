@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"os"
+  "net/http"
 )
 
 func main() {
@@ -21,6 +22,11 @@ func main() {
 	e.Logger.SetLevel(log.DEBUG)
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+  // Add CORS
+  e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+    AllowOrigins: []string{"*"},
+    AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+  }))
 
 	// Init the handlers
 	h := &handler.Handler{}
