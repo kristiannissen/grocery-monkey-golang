@@ -24,7 +24,6 @@ func init() {
 	}
 }
 
-// TODO: move to model.go
 func (m *Model) UserSetUp() {
 	_, err := db.Exec(
 		"CREATE TABLE IF NOT EXISTS users (users_id serial PRIMARY KEY, nickname varchar(255), uuid varchar(255), created_at TIMESTAMP)")
@@ -33,7 +32,6 @@ func (m *Model) UserSetUp() {
 	}
 }
 
-// TODO: move to model.go
 func (m *Model) UserTearDown() {
 	_, err := db.Exec("DROP TABLE IF EXISTS users")
 	if err != nil {
@@ -41,9 +39,23 @@ func (m *Model) UserTearDown() {
 	}
 }
 
-func (m *Model) CleanUserTable() {
+func (m *Model) UserDelete() {
 	_, err := db.Exec("DELETE FROM users")
 	if err != nil {
 		log.Fatalf("Delete statement %q", err)
+	}
+}
+
+func (m *Model) GroceryListTearDown() {
+	_, err := db.Exec("DROP TABLE IF EXISTS grocerylist")
+	if err != nil {
+		log.Fatalf("Drop statement %q", err)
+	}
+}
+
+func (m *Model) GroceryListSetUp() {
+	_, err := db.Exec("CREATE TABLE IF NOT EXISTS grocerylist (grocerylist_id serial PRIMARY KEY, groceries jsonb NOT NULL, user_uuid VARCHAR(255) NOT NULL, created_at TIMESTAMP, uuid VARCHAR(255))")
+	if err != nil {
+		log.Fatalf("Create statement %q", err)
 	}
 }

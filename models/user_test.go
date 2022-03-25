@@ -10,14 +10,9 @@ var (
 )
 
 func init() {
-	m.UserTearDown()
-	m.UserSetUp()
 }
 
 func TestGetUserNotFound(t *testing.T) {
-
-	m.CleanUserTable()
-
 	_, err := m.GetUser("Pussy")
 
 	if err == nil {

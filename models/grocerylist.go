@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	_ "errors"
 	"github.com/google/uuid"
-	"log"
+	_ "log"
 )
 
 type (
@@ -21,20 +21,6 @@ type (
 		UserUuid    string    `json:"useruuid"`
 	}
 )
-
-func (m *Model) GroceryListSetUp() {
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS grocerylist (grocerylist_id serial PRIMARY KEY, groceries jsonb NOT NULL, user_uuid VARCHAR(255) NOT NULL, created_at TIMESTAMP, uuid VARCHAR(255))")
-	if err != nil {
-		log.Fatalf("Create statement %q", err)
-	}
-}
-
-func (m *Model) GroceryListTearDown() {
-	_, err := db.Exec("DROP TABLE IF EXISTS grocerylist")
-	if err != nil {
-		log.Fatalf("Drop statement %q", err)
-	}
-}
 
 func (m *Model) GetGroceryList(user_uuid string) (*GroceryList, error) {
 	g := new(GroceryList)
@@ -74,6 +60,7 @@ func (m *Model) UpdateGroceryList(g *GroceryList) (*GroceryList, error) {
 		return nil, err
 	}
 	// Update the grocerylist
+	// TODO: Should use subscriber instead
 	_, err = db.Exec("UPDATE grocerylist SET groceries = $1 WHERE user_uuid = $2", str, g.UserUuid)
 	if err != nil {
 		return nil, err

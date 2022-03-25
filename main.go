@@ -34,6 +34,8 @@ func main() {
 	g := e.Group("/api")
 	// Create groceries
 	g.POST("/groceries", h.CreateGroceryList)
+	// Update groceries
+  g.PUT("/groceries", h.UpdateGroceryList)
 
 	// Listen & Serve
 	e.Logger.Fatal(e.Start(":" + port))
