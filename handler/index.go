@@ -17,7 +17,9 @@ func (h *Handler) Index(c echo.Context) error {
 
 func (h *Handler) SetUp(c echo.Context) error {
 	m := models.Model{}
+    m.UserTearDown()
 	m.UserSetUp()
+    m.GroceryListTearDown()
 	m.GroceryListSetUp()
 
 	return c.String(http.StatusOK, "Setup working")
