@@ -13,7 +13,7 @@ import (
 type (
 	jwtCustomClaims struct {
 		NickName string `json:"nickname"`
-    Uuid string `json:uuid`
+		Uuid     string `json:"useruuid"`
 		jwt.StandardClaims
 	}
 )
@@ -64,6 +64,11 @@ func main() {
 	g.POST("/groceries", h.CreateGroceryList)
 	// Update groceries
 	g.PUT("/groceries", h.UpdateGroceryList)
+	// JWT Test
+	g.GET("/jwttest", func(c echo.Context) error {
+		log.Info("JWT is working")
+		return c.String(http.StatusOK, "Hello")
+	})
 
 	// Listen & Serve
 	e.Logger.Fatal(e.Start(":" + port))

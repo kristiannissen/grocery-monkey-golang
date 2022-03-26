@@ -12,13 +12,13 @@ import (
 type (
 	jwtCustomClaims struct {
 		NickName string `json:"nickname"`
-		Uuid     string `json:"uuid"`
+		Uuid     string `json:"useruuid"`
 		jwt.StandardClaims
 	}
 )
 
 const (
-	secret string = "hellokitty"
+	secret string = "hello-kitty"
 )
 
 func (h *Handler) Authenticate(c echo.Context) error {
