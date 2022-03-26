@@ -67,7 +67,7 @@ func main() {
 	// JWT Test
 	g.GET("/jwttest", func(c echo.Context) error {
 		log.Info("JWT is working")
-		return c.String(http.StatusOK, "Hello")
+		return c.HTML(http.StatusOK, "Hello")
 	})
 
 	// Listen & Serve
