@@ -54,7 +54,7 @@ func (m *Model) GroceryListTearDown() {
 }
 
 func (m *Model) GroceryListSetUp() {
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS grocerylist (grocerylist_id serial PRIMARY KEY, groceries jsonb NOT NULL, user_uuid VARCHAR(255) NOT NULL, created_at TIMESTAMP, uuid VARCHAR(255))")
+	_, err := db.Exec("CREATE TABLE IF NOT EXISTS grocerylist (grocerylist_id serial PRIMARY KEY, groceries jsonb NOT NULL, user_uuid VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT NOW(), uuid VARCHAR(255))")
 	if err != nil {
 		log.Fatalf("Create statement %q", err)
 	}

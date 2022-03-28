@@ -45,7 +45,8 @@ func (m *Model) CreateGroceryList(g *GroceryList) (*GroceryList, error) {
 		return nil, err
 	}
 	// Store grocerylist
-	_, err = db.Exec("INSERT INTO grocerylist (groceries, user_uuid) VALUES ($1, $2)", str, g.UserUuid)
+	_, err = db.Exec(
+		"INSERT INTO grocerylist (groceries, user_uuid, uuid) VALUES ($1, $2, $3)", str, g.UserUuid, g.Uuid)
 	if err != nil {
 		return nil, err
 	}
