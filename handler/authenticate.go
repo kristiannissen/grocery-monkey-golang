@@ -44,10 +44,6 @@ func (h *Handler) Authenticate(c echo.Context) error {
 		}
 	}
 
-	groceryList := m.NewGroceryList()
-	groceryList.UserUuid = user.Uuid
-	groceryList.Subscribers = append(groceryList.Subscribers, user.Uuid)
-
 	claims := &jwtCustomClaims{
 		user.NickName,
 		user.Uuid,
@@ -64,7 +60,6 @@ func (h *Handler) Authenticate(c echo.Context) error {
 	}
 
 	return c.JSONPretty(http.StatusOK, echo.Map{
-		"token":     t,
-		"groceries": groceryList,
+		"token": t,
 	}, "  ")
 }
