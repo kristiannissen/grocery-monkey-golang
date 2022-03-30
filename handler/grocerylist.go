@@ -22,6 +22,8 @@ func (h *Handler) CreateGroceryList(c echo.Context) error {
 		log.Printf("GroceryList could not be created %q", err)
 		return c.String(http.StatusInternalServerError, "Data Error")
 	}
+	// Add user as subscriber
+	g.Subscribers = append(g.Subscribers, g.UserUuid)
 
 	return c.JSONPretty(http.StatusCreated, g, "  ")
 }
@@ -37,7 +39,7 @@ func (h *Handler) UpdateGroceryList(c echo.Context) error {
 	}
 
 	// Store the grocerylist
-	if _, err = m.UpdateGroceryList(g); err != nil {
+	if g, err = m.UpdateGroceryList(g); err != nil {
 		log.Printf("GroceryList could not be created %q", err)
 		return c.String(http.StatusInternalServerError, "Data Error")
 	}

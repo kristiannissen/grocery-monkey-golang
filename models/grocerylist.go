@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	_ "errors"
 	"github.com/google/uuid"
-	_ "log"
+	"log"
 )
 
 type (
@@ -32,8 +32,6 @@ func (m *Model) GetGroceryList(user_uuid string) (*GroceryList, error) {
 		return nil, err
 	}
 	json.Unmarshal([]byte(groceries), &g)
-
-	// log.Println(g)
 
 	return g, nil
 }
