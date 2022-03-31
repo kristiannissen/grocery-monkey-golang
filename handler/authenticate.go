@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// TODO: Move to handler
 type (
 	jwtCustomClaims struct {
 		NickName string `json:"nickname"`
@@ -17,19 +18,23 @@ type (
 	}
 )
 
+// TODO: Move to handler
 const (
 	secret string = "hello-kitty"
 )
 
 func (h *Handler) Authenticate(c echo.Context) error {
 	var err error
+	var msg Message
 
 	m := models.Model{}
 	u := m.NewUser()
 
 	if err = c.Bind(u); err != nil {
 		log.Printf("Request Error %s", err)
-		return c.String(http.StatusUnauthorized, "Request Error")
+		msg.Text = err.Error()
+
+		return c.JSON(http.StatusUnauthorized, m)
 	}
 
 	user := new(models.User)
@@ -40,7 +45,9 @@ func (h *Handler) Authenticate(c echo.Context) error {
 		user, err = m.CreateUser(u.NickName)
 		if err != nil {
 			log.Printf("User could not be created %s", err)
-			return c.String(http.StatusInternalServerError, "User could not be created")
+			msg.Text = err.Error()
+
+			return c.JSON(http.StatusInternalServerError, msg)
 		}
 	}
 
@@ -56,7 +63,9 @@ func (h *Handler) Authenticate(c echo.Context) error {
 	t, err := token.SignedString([]byte(secret))
 	if err != nil {
 		log.Printf("JWT token error %s", err)
-		return c.String(http.StatusInternalServerError, "JWT error")
+		msg.Text = err.Error()
+
+		return c.JSON(http.StatusInternalServerError, msg)
 	}
 
 	return c.JSONPretty(http.StatusOK, echo.Map{

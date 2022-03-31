@@ -54,6 +54,7 @@ func TestUpdateGroceryList(t *testing.T) {
 	// Get a user
 	user := m.NewUser()
 	grocerylist.UserUuid = user.Uuid
+	grocerylist.Subscribers = append(grocerylist.Subscribers, user.Uuid)
 
 	grocerylist, _ = m.CreateGroceryList(grocerylist)
 	// Update groceries

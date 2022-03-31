@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	_ "errors"
 	"github.com/google/uuid"
-	_ "log"
+	"log"
 )
 
 type (
@@ -23,12 +23,14 @@ type (
 )
 
 func (m *Model) GetGroceryList(user_uuid string) (*GroceryList, error) {
+	log.Printf("User uuid %s", user_uuid)
 	g := new(GroceryList)
 	var groceries string
 	// TODO: should be finding based on subscribers
 	row := db.QueryRow("SELECT groceries FROM grocerylist WHERE user_uuid = $1", user_uuid)
 	err := row.Scan(&groceries)
 	if err != nil {
+		log.Printf("Select error %s", err)
 		return nil, err
 	}
 	json.Unmarshal([]byte(groceries), &g)
@@ -40,12 +42,14 @@ func (m *Model) CreateGroceryList(g *GroceryList) (*GroceryList, error) {
 	// Encode struct to string
 	str, err := json.Marshal(g)
 	if err != nil {
+		log.Printf("Marshal error %s", err)
 		return nil, err
 	}
 	// Store grocerylist
 	_, err = db.Exec(
 		"INSERT INTO grocerylist (groceries, user_uuid, uuid) VALUES ($1, $2, $3)", str, g.UserUuid, g.Uuid)
 	if err != nil {
+		log.Printf("Insert error %s", err)
 		return nil, err
 	}
 
@@ -56,12 +60,15 @@ func (m *Model) UpdateGroceryList(g *GroceryList) (*GroceryList, error) {
 	// Encode the struct to a string
 	str, err := json.Marshal(g)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
+	// log.Printf("str %s", str)
 	// Update the grocerylist
 	// TODO: Should use subscriber instead
 	_, err = db.Exec("UPDATE grocerylist SET groceries = $1 WHERE user_uuid = $2", str, g.UserUuid)
 	if err != nil {
+		log.Printf("Update error %s", err)
 		return nil, err
 	}
 
