@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	_ "errors"
 	"github.com/google/uuid"
-	"log"
+	_ "log"
 )
 
 type (
