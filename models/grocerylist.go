@@ -22,12 +22,11 @@ type (
 	}
 )
 
-func (m *Model) GetGroceryList(user_uuid string) (*GroceryList, error) {
-	log.Printf("User uuid %s", user_uuid)
+func (m *Model) GetGroceryList(uuid string) (*GroceryList, error) {
 	g := new(GroceryList)
 	var groceries string
 	// TODO: should be finding based on subscribers
-	row := db.QueryRow("SELECT groceries FROM grocerylist WHERE user_uuid = $1", user_uuid)
+	row := db.QueryRow("SELECT groceries FROM grocerylist WHERE uuid = $1", uuid)
 	err := row.Scan(&groceries)
 	if err != nil {
 		log.Printf("Select error %s", err)
@@ -53,7 +52,7 @@ func (m *Model) CreateGroceryList(g *GroceryList) (*GroceryList, error) {
 		return nil, err
 	}
 
-	return m.GetGroceryList(g.UserUuid)
+	return m.GetGroceryList(g.Uuid)
 }
 
 func (m *Model) UpdateGroceryList(g *GroceryList) (*GroceryList, error) {
@@ -66,13 +65,13 @@ func (m *Model) UpdateGroceryList(g *GroceryList) (*GroceryList, error) {
 	// log.Printf("str %s", str)
 	// Update the grocerylist
 	// TODO: Should use subscriber instead
-	_, err = db.Exec("UPDATE grocerylist SET groceries = $1 WHERE user_uuid = $2", str, g.UserUuid)
+	_, err = db.Exec("UPDATE grocerylist SET groceries = $1 WHERE uuid = $2", str, g.Uuid)
 	if err != nil {
 		log.Printf("Update error %s", err)
 		return nil, err
 	}
 
-	return m.GetGroceryList(g.UserUuid)
+	return m.GetGroceryList(g.Uuid)
 }
 
 func (m *Model) NewGroceryList() *GroceryList {

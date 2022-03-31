@@ -47,14 +47,6 @@ func (h *Handler) UpdateGroceryList(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, msg)
 	}
 
-	// Get the grocerylist
-	if g, err = m.GetGroceryList(g.UserUuid); err != nil {
-		log.Printf("Could not find grocerylist %s", err)
-		msg.Text = err.Error()
-
-		return c.JSON(http.StatusOK, msg)
-	}
-
 	// Store the grocerylist
 	if g, err = m.UpdateGroceryList(g); err != nil {
 		log.Printf("GroceryList could not be created %s", err)
