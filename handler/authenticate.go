@@ -70,6 +70,6 @@ func (h *Handler) Authenticate(c echo.Context) error {
 
 	return c.JSONPretty(http.StatusOK, echo.Map{
 		"token": t,
-		"uuid":  u.Uuid,
+		"useruuid":  u.Uuid,
 	}, "  ")
 }
