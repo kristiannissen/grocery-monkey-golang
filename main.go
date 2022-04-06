@@ -64,7 +64,9 @@ func main() {
 	g.POST("/groceries", h.CreateGroceryList)
 	// Update groceries
 	g.PUT("/groceries", h.UpdateGroceryList)
-	// JWT Test
+	// Get groceries
+    g.GET("/groceries", h.GetGroceryList)
+    // JWT Test
 	g.GET("/jwttest", func(c echo.Context) error {
 		log.Info("JWT is working")
 		return c.HTML(http.StatusOK, "Hello")

@@ -69,7 +69,7 @@ func (h *Handler) Authenticate(c echo.Context) error {
 	}
 
 	return c.JSONPretty(http.StatusOK, echo.Map{
-		"token": t,
-		"useruuid":  u.Uuid,
+		"token":    t,
+		"useruuid": u.Uuid,
 	}, "  ")
 }

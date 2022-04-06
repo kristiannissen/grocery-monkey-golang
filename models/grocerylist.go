@@ -15,7 +15,7 @@ type (
 	}
 
 	GroceryList struct {
-		Uuid        string    `json:"uuid"`
+		Uuid        string    `json:"uuid" query:"uuid"`
 		Subscribers []string  `json:"subscribers"`
 		Groceries   []Grocery `json:"groceries"`
 		UserUuid    string    `json:"useruuid"`
